@@ -381,9 +381,6 @@
             <h1>Sam - Lesson Adaptations for ND Learners</h1>
             <p class="brand">Pilot Version • Feedback Welcome • Nov 2025</p>
             <p class="subtitle">Upload a lesson plan or assessment and Sam will generate two adapted versions: one optimised for autistic pupils (emphasising structure and predictability) and one for pupils with a PDA profile (emphasising autonomy and choice). Both versions maintain your original learning objectives while removing access barriers.</p>
-            <div class="info" style="margin-top: 20px;">
-                <strong>Note:</strong> Downloadable files feature is currently in development. For now, you can copy and paste the adapted versions from the conversation.
-            </div>
         </header>
         
         <div id="setupSection">
@@ -701,34 +698,75 @@
             console.log('Message length:', message.length);
             console.log('Message preview:', message.substring(0, 200));
             
-            const autismMatch = message.match(/### AUTISM VERSION START\n([\s\S]*?)\n### AUTISM VERSION END/);
-            const pdaMatch = message.match(/### PDA VERSION START\n([\s\S]*?)\n### PDA VERSION END/);
+            const autismMatch = message.match(/### AUTISM JSON START\n([\s\S]*?)\n### AUTISM JSON END/);
+            const pdaMatch = message.match(/### PDA JSON START\n([\s\S]*?)\n### PDA JSON END/);
             
-            console.log('Autism match found:', !!autismMatch);
-            console.log('PDA match found:', !!pdaMatch);
+            console.log('Autism JSON found:', !!autismMatch);
+            console.log('PDA JSON found:', !!pdaMatch);
             
             if (autismMatch && pdaMatch) {
-                autismVersion = autismMatch[1];
-                pdaVersion = pdaMatch[1];
-                console.log('Both versions found! Showing download section.');
-                document.getElementById('downloadSection').classList.remove('hidden');
+                try {
+                    // Parse the JSON
+                    autismVersion = JSON.parse(autismMatch[1].trim());
+                    pdaVersion = JSON.parse(pdaMatch[1].trim());
+                    console.log('Both versions parsed successfully!');
+                    document.getElementById('downloadSection').classList.remove('hidden');
+                } catch (error) {
+                    console.error('Error parsing JSON:', error);
+                    addMessageToChat('error', 'Error parsing document data. Please try again.');
+                }
             } else {
                 console.log('Versions not found yet. Autism:', !!autismMatch, 'PDA:', !!pdaMatch);
             }
         }
         
         // Download files
-        function downloadFile(version) {
-            const content = version === 'autism' ? autismVersion : pdaVersion;
-            const filename = version === 'autism' ? 'Autism_Version.md' : 'PDA_Version.md';
+        async function downloadFile(version) {
+            const documentData = version === 'autism' ? autismVersion : pdaVersion;
+            const filename = version === 'autism' ? 'Autism_Friendly_Version.docx' : 'PDA_Friendly_Version.docx';
             
-            const blob = new Blob([content], { type: 'text/markdown' });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            a.click();
-            URL.revokeObjectURL(url);
+            try {
+                // Show loading state
+                const button = event.target;
+                button.disabled = true;
+                button.textContent = 'Generating...';
+                
+                // Call conversion API
+                const response = await fetch('/api/convert-to-docx', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        documentData: documentData,
+                        filename: filename
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to generate document');
+                }
+                
+                // Get the blob and download it
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                a.click();
+                URL.revokeObjectURL(url);
+                
+                // Reset button
+                button.disabled = false;
+                button.textContent = version === 'autism' ? '📥 Download Autism Version' : '📥 Download PDA Version';
+                
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Error generating Word document. Please try again.');
+                // Reset button
+                event.target.disabled = false;
+                event.target.textContent = version === 'autism' ? '📥 Download Autism Version' : '📥 Download PDA Version';
+            }
         }
         
         // Reset app

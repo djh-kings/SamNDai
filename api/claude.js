@@ -15,10 +15,18 @@ export default async function handler(req, res) {
   }
   
   try {
-    const { api_key, messages } = req.body;
+    // Get API key from environment variable (set in Vercel dashboard)
+    const api_key = process.env.ANTHROPIC_API_KEY;
     
     if (!api_key) {
-      return res.status(400).json({ error: 'API key is required' });
+      console.error('ANTHROPIC_API_KEY environment variable not set');
+      return res.status(500).json({ error: 'Server configuration error - API key not configured' });
+    }
+    
+    const { messages } = req.body;
+    
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ error: 'Messages array is required' });
     }
     
     console.log(`Processing request with ${messages.length} messages`);

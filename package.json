@@ -6,6 +6,9 @@
   "scripts": {
     "dev": "vercel dev"
   },
+  "dependencies": {
+    "docx": "^8.5.0"
+  },
   "keywords": ["education", "accessibility", "autism", "PDA", "SEND"],
   "author": "Dave",
   "license": "ISC"

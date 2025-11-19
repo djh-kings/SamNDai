@@ -1,0 +1,12 @@
+{
+  "name": "sam-nd-ai",
+  "version": "1.0.0",
+  "description": "Neurodivergent adaptations tool for UK educators",
+  "main": "index.html",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "keywords": ["education", "accessibility", "autism", "PDA", "SEND"],
+  "author": "Dave",
+  "license": "ISC"
+}

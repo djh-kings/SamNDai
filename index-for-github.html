@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Neurodivergent Adaptations Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background: #F4F6F8;
+            padding: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #FFFFFF;
+            padding: 32px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        h1 {
+            color: #0A3D62;
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        
+        .brand {
+            color: rgba(10, 61, 98, 0.8);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+        
+        .subtitle {
+            color: #888888;
+            font-size: 1.2rem;
+            font-weight: 400;
+        }
+        
+        h2 {
+            color: #333333;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            margin-top: 32px;
+        }
+        
+        h3 {
+            color: #333333;
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            margin-top: 24px;
+        }
+        
+        .section {
+            margin-bottom: 32px;
+        }
+        
+        hr {
+            border: none;
+            border-top: 1px solid #D0D3D4;
+            margin: 32px 0;
+        }
+        
+        label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #0A3D62;
+        }
+        
+        input[type="text"],
+        input[type="password"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #D0D3D4;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+        
+        input[type="text"]:focus,
+        input[type="password"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #0A3D62;
+        }
+        
+        textarea {
+            min-height: 200px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        button {
+            background: #F5A623;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        button:hover:not(:disabled) {
+            filter: brightness(110%);
+        }
+        
+        button:disabled {
+            background: #D0D3D4;
+            cursor: not-allowed;
+        }
+        
+        button.secondary {
+            background: white;
+            color: #0A3D62;
+            border: 2px solid #0A3D62;
+        }
+        
+        button.secondary:hover:not(:disabled) {
+            background: #0A3D62;
+            color: white;
+        }
+        
+        .file-upload {
+            border: 2px dashed #D0D3D4;
+            border-radius: 12px;
+            padding: 40px;
+            text-align: center;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .file-upload:hover {
+            border-color: #0A3D62;
+            background: #f0f8ff;
+        }
+        
+        .file-upload.dragover {
+            border-color: #F5A623;
+            background: #fff9f0;
+        }
+        
+        #fileInput {
+            display: none;
+        }
+        
+        .chat-container {
+            border: 1px solid #D0D3D4;
+            border-radius: 12px;
+            height: 500px;
+            overflow-y: auto;
+            padding: 24px;
+            background: #F4F6F8;
+            margin-bottom: 16px;
+        }
+        
+        .message {
+            margin-bottom: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            line-height: 1.6;
+        }
+        
+        .message.user {
+            background: white;
+            margin-left: 10%;
+            border: 2px solid #D0D3D4;
+        }
+        
+        .message.assistant {
+            background: white;
+            margin-right: 10%;
+            border-left: 4px solid #0A3D62;
+        }
+        
+        .message-label {
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+            color: #0A3D62;
+            margin-bottom: 8px;
+        }
+        
+        .response-input {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+        
+        .response-input input {
+            flex: 1;
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .warning {
+            background: #FFF3CD;
+            border: 2px solid #F1C40F;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #856404;
+        }
+        
+        .success {
+            background: #d4edda;
+            border: 2px solid #2ECC71;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #155724;
+        }
+        
+        .error {
+            background: #f8d7da;
+            border: 2px solid #E74C3C;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #721c24;
+        }
+        
+        .info {
+            background: #d1ecf1;
+            border: 2px solid #0A3D62;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #0c5460;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 24px;
+            color: #888888;
+        }
+        
+        .spinner {
+            border: 3px solid #D0D3D4;
+            border-top: 3px solid #F5A623;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 16px auto;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .download-buttons {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            flex-wrap: wrap;
+        }
+        
+        .download-buttons button {
+            background: #2ECC71;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .download-buttons button:hover {
+            filter: brightness(110%);
+        }
+        
+        .help-text {
+            font-size: 14px;
+            color: #888888;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        
+        code {
+            background: #0D202F;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+        
+        .extraction-status {
+            margin-top: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 14px;
+        }
+        
+        .card {
+            background: white;
+            border-radius: 12px;
+            padding: 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+            margin-bottom: 24px;
+        }
+        
+        a {
+            color: #0A3D62;
+            text-decoration: underline;
+            transition: color 0.2s ease;
+        }
+        
+        a:hover {
+            color: #F5A623;
+        }
+        
+        strong {
+            color: #0A3D62;
+        }
+        
+        /* Accessibility improvements */
+        *:focus {
+            outline: 2px solid #F5A623;
+            outline-offset: 2px;
+        }
+        
+        @media (max-width: 768px) {
+            body {
+                padding: 20px;
+            }
+            
+            .container {
+                padding: 24px;
+            }
+            
+            h1 {
+                font-size: 1.8rem;
+            }
+            
+            .message.user,
+            .message.assistant {
+                margin-left: 0;
+                margin-right: 0;
+            }
+            
+            .download-buttons {
+                flex-direction: column;
+            }
+            
+            .download-buttons button {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Neurodivergent Adaptations Generator</h1>
+            <p class="brand">Powered by Claude AI • Built for UK Educators</p>
+            <p class="subtitle">Upload a lesson plan and generate autism-friendly and PDA-friendly versions</p>
+        </header>
+        
+        <div id="setupSection">
+            <div class="warning">
+                <strong>⚠️ API Key Required:</strong> This tool requires an Anthropic API key. Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>. Your key is stored only in your browser and never sent anywhere except to Anthropic's API.
+            </div>
+            
+            <section class="section">
+                <h2>Step 1: Enter your API key</h2>
+                <label for="apiKey">Anthropic API Key:</label>
+                <input type="password" id="apiKey" placeholder="sk-ant-..." />
+                <p class="help-text">Your API key will be stored in your browser's local storage for convenience. Cost per adaptation: approximately £0.05–0.10.</p>
+            </section>
+            
+            <hr>
+            
+            <section class="section">
+                <h2>Step 2: Upload your lesson plan</h2>
+                <label>Upload File:</label>
+                <div class="file-upload" id="fileUploadArea">
+                    <p style="font-size: 1.2rem; margin-bottom: 8px;">📄 Click to select a file or drag and drop</p>
+                    <p style="font-size: 14px; color: #888888;">Supported formats: .txt, .docx, .pdf</p>
+                </div>
+                <input type="file" id="fileInput" accept=".txt,.docx,.pdf" />
+                <div id="fileStatus"></div>
+            </section>
+            
+            <section class="section">
+                <label for="lessonText">Or paste lesson plan text:</label>
+                <textarea id="lessonText" placeholder="Paste your lesson plan here..."></textarea>
+                <p class="help-text">You can edit the extracted text above before starting the adaptation.</p>
+            </section>
+            
+            <hr>
+            
+            <button id="startBtn" onclick="startAdaptation()">Start Adaptation</button>
+        </div>
+        
+        <div id="chatSection" class="hidden">
+            <h2>Conversation with Sam</h2>
+            <div class="chat-container" id="chatContainer"></div>
+            
+            <div class="response-input">
+                <input type="text" id="userResponse" placeholder="Type your response..." onkeypress="handleKeyPress(event)" />
+                <button onclick="sendResponse()">Send</button>
+            </div>
+            
+            <div id="downloadSection" class="hidden">
+                <div class="success">
+                    <strong>✅ Adaptation complete!</strong><br>
+                    Download your adapted versions below. Both maintain the original learning objectives and assessment criteria while addressing access barriers.
+                </div>
+                <div class="download-buttons">
+                    <button onclick="downloadFile('autism')">📥 Download Autism Version</button>
+                    <button onclick="downloadFile('pda')">📥 Download PDA Version</button>
+                </div>
+            </div>
+            
+            <hr>
+            
+            <button onclick="resetApp()" class="secondary">Start New Adaptation</button>
+        </div>
+    </div>
+
+    <!-- External libraries for file processing -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <script>
+        // Configure PDF.js worker
+        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        
+        // State management
+        let conversationHistory = [];
+        let apiKey = '';
+        let lessonContent = '';
+        let uploadedFile = null;
+        let autismVersion = '';
+        let pdaVersion = '';
+        
+        // Master instructions (embedded)
+        const masterInstructions = `# Sam - Neurodivergent Adaptations Specialist (Master Instructions v2.0)
+
+**Last updated:** 10/11/2025
+
+## Critical fixes implemented
+
+1. ✅ **Approval gate now mandatory** - Cannot skip to outputs
+2. ✅ **File creation policy enforced** - Only 2 student-facing files
+3. ✅ **Intake questions required** - Forces consultation mode
+4. ✅ **Self-check integrated** - Hints policy enforced before delivery
+
+---
+
+# Role (Persona)
+
+You are Sam, a UK expert in the education of neurodivergent pupils, focused on secondary school. You have many years' experience as a respected SENCO, hold a PGCert/PGDip in Autism, and have undertaken PDA Society training with extensive practice supporting pupils with a PDA profile. You are a cross-curricular classroom teacher who applies evidence-informed pedagogies and adapts them for diverse learners. In all responses, give practical, classroom-ready guidance that is clear, concrete, and aligned with UK school contexts (SEND Code of Practice, EHCPs, safeguarding, access arrangements). Avoid diagnosis; prioritise accessibility, predictability, autonomy, and partnership with the pupil and family.
+
+---
+
+# Output format & file creation policy
+
+**CRITICAL:** In this web interface, deliver all materials as **plain text in the chat**, formatted with clear section markers.
+
+**For the two student-facing versions, wrap them in special markers:**
+- Autism version: \`### AUTISM VERSION START\` ... \`### AUTISM VERSION END\`
+- PDA version: \`### PDA VERSION START\` ... \`### PDA VERSION END\`
+
+**Formatting:** Use clean, readable Markdown.
+
+---
+
+# Task workflow: Review & adapt activities/lessons for Autism and PDA
+
+## STAGE 0: Intake (MANDATORY - always ask at least one question)
+
+**CRITICAL:** Even if the document contains most information, you MUST establish consultation mode by asking at least one intake question before proceeding to Analysis.
+
+**Minimum questions (always ask):**
+- Completion mode: timed/homework/classroom?
+- Assessment stakes: formal/low-stakes/practice?
+
+**Additional questions (ask if missing or unclear):**
+- Objective & success criteria
+- Year group/subject/exam board
+- Materials/resources (incl. tech), timings, grouping
+- Assessment method (how success is evidenced)
+- Constraints (room, noise, movement, devices, homework)
+- Non-negotiables (must-include content)
+
+**Delivery:** Be polite and concise. Don't stall if you can infer most details—but ALWAYS ask at least one question to establish conversational mode.
+
+---
+
+## STAGE 1: Analysis (teacher-facing)
+
+Analyse the submitted plan through an inclusion lens (UK context). Cover:
+
+- **Clarity & load:** instructions, sequencing, reading demand, vocabulary, number of steps
+- **Sensory environment:** noise, movement, visual clutter, transitions
+- **Executive function:** organisation, time awareness, task initiation/maintenance, hand-in
+- **Autonomy & demand profile:** choice, control, pressure from language/timing
+- **Assessment access:** alternative evidence routes, scaffolds, retrieval cues
+- **Likely friction points:** where overload or demand avoidance may spike, and why
+
+---
+
+## STAGE 2: Recommendations (teacher-facing) - MANDATORY
+
+**CRITICAL:** You MUST complete this stage before proceeding to the Approval Gate. DO NOT skip this stage.
+
+Provide 6–10 specific, actionable changes. For each recommendation, include:
+
+- **What to change** (concrete action)
+- **Why it helps** (brief justification linked to autism/PDA needs)
+- **How to implement** (micro-script/visual/support)
+
+Tag each as **[Autism]**, **[PDA]**, or **[Both]**.
+
+---
+
+## STAGE 3: Approval gate - HARD STOP
+
+**Ask exactly this:**
+
+> "Would you like me to generate the two student-facing versions now (Autism-friendly and PDA-friendly), using the recommendations above? I'll include [list the key scaffolds you're planning: worked examples, checklists, Now/Next/Finished strips, etc.]."
+
+**Wait for approval.** Only proceed when the teacher says "yes", "go ahead", "proceed", or similar.
+
+---
+
+## STAGE 4: Create student-facing outputs (ONLY after approval)
+
+Create two separate versions that pupils can read and follow independently.
+
+### Shared rules (apply to both versions)
+
+- UK English, clear headings, short sentences, minimal idiom
+- Start with **What you'll do**, **Time needed**, **What you need**, **Finished looks like…**
+- Provide a **Now/Next/Finished** structure and a **success checklist**
+- Target KS2–3 readability unless told otherwise; define key terms
+- Include **one worked example** (or request one) and **one quick self-check** where appropriate
+- Formatting: bullet points, numbered steps (max 6 per sequence), generous white space
+
+---
+
+### Hints and scaffolds: principles (CRITICAL)
+
+**Core principle: Scaffold the format, not the thinking.**
+
+#### Scaffolds SHOULD:
+
+- Show *how* to lay out an answer (e.g., worked examples, templates, tables)
+- Clarify *what the command verb means*
+- Prevent *common technical errors* that aren't part of the learning
+- Offer *method choice* where appropriate
+
+#### Scaffolds must NOT:
+
+- Rephrase the question as a hint
+- Narrow the answer space
+- Provide the algorithm or logic
+- Turn recall questions into recognition tasks
+
+---
+
+### Hints policy (apply to both versions)
+
+- **Maximum one hint per question.**
+- **Recall questions get zero hints.**
+- **Procedure questions get worked examples, not hints.**
+- **Command verb clarifiers are not hints.**
+- **Test every hint:** Remove it and ask, "Can the pupil still understand what format/length/approach is expected?"
+
+---
+
+### Version A: Autism-friendly
+
+Prioritise predictability and clarity.
+
+- **Structure:** consistent layout; single instruction per step
+- **Language:** concrete verbs; avoid ambiguity
+- **Scaffolds:** model answer/diagram; vocabulary bank; tick-box checklist
+- **Sensory/processing:** quiet launch option, optional headphones, timed micro-breaks
+- **Group work:** opt-in roles or parallel solo pathway
+
+---
+
+### Version B: PDA-friendly
+
+Keep predictability in the spine; reduce perceived pressure and increase autonomy.
+
+- **Entry:** low-demand invite ("When you're ready…"), visible pathway/format choices
+- **Control:** pupil chooses order, method, or partner; time-delay after the ask
+- **Language:** collaborative tone; soft, specific praise
+- **Plan B visible:** easy on-ramp if pushback occurs
+- **Social load:** allow independent start before any peer element
+
+---
+
+## STAGE 5: Self-check before delivery (MANDATORY)
+
+Before delivering the two student-facing versions, complete this self-check:
+
+**For each hint I've added, I can confirm:**
+
+1. ☐ It clarifies task *format* or *command verb*, not content
+2. ☐ Removing it would leave the pupil unsure of *how* to answer (layout/length), but not *what* to answer
+3. ☐ It does not rephrase the question
+4. ☐ It does not narrow the answer space to 2–3 options
+5. ☐ It does not provide the algorithm, logic, or key terminology
+
+**If I can't tick all five boxes, delete the hint.**
+
+---
+
+## STAGE 6: Final packaging & delivery
+
+Deliver in this exact order:
+
+1. **Teacher summary** (≤150 words): Brief overview of what changed and why.
+
+2. **Wrap each student-facing version in the special markers:**
+   - \`### AUTISM VERSION START\` ... \`### AUTISM VERSION END\`
+   - \`### PDA VERSION START\` ... \`### PDA VERSION END\`
+
+3. **Supplementary materials** (after the versions):
+   - Now/Next/Finished strip
+   - Success checklist (if not already in the versions)
+   - Command verb definitions (if relevant)
+   - Any templates or visual supports
+
+---
+
+## Guardrails
+
+- Descriptive, not diagnostic; no medical advice
+- Behaviour language stays neutral; focus on environment, task design, communication
+- If a suggestion conflicts with exam rules or safeguarding, flag it and provide a compliant alternative
+- **Over-scaffolding check:** Before finalising, remove all hints and ask: "Does the pupil still know what kind of answer to write and roughly how long it should be?" If yes, the hints were appropriate. If no, you've given away the answer—remove or rewrite the hint.
+
+---
+
+**End of master instructions.**`;
+
+        // Load saved API key
+        window.onload = function() {
+            const savedKey = localStorage.getItem('anthropicApiKey');
+            if (savedKey) {
+                document.getElementById('apiKey').value = savedKey;
+            }
+        };
+        
+        // File upload handling
+        const fileUploadArea = document.getElementById('fileUploadArea');
+        const fileInput = document.getElementById('fileInput');
+        
+        fileUploadArea.onclick = () => fileInput.click();
+        
+        fileInput.onchange = async function(e) {
+            const file = e.target.files[0];
+            if (!file) return;
+            
+            uploadedFile = file;
+            const statusDiv = document.getElementById('fileStatus');
+            statusDiv.innerHTML = `<div class="info">Processing ${file.name}...</div>`;
+            
+            try {
+                if (file.name.endsWith('.txt')) {
+                    lessonContent = await readTextFile(file);
+                    statusDiv.innerHTML = `<div class="success">✅ Extracted text from ${file.name} (${lessonContent.length} characters)</div>`;
+                } else if (file.name.endsWith('.docx')) {
+                    lessonContent = await extractTextFromDocx(file);
+                    statusDiv.innerHTML = `<div class="success">✅ Extracted text from ${file.name} (${lessonContent.length} characters)</div>`;
+                } else if (file.name.endsWith('.pdf')) {
+                    lessonContent = await extractTextFromPdf(file);
+                    statusDiv.innerHTML = `<div class="success">✅ Extracted text from ${file.name} (${lessonContent.length} characters)</div>`;
+                }
+                
+                // Show preview in textarea
+                document.getElementById('lessonText').value = lessonContent.substring(0, 1000) + (lessonContent.length > 1000 ? '...' : '');
+            } catch (error) {
+                statusDiv.innerHTML = `<div class="error">❌ Error processing file: ${error.message}</div>`;
+                console.error('File processing error:', error);
+            }
+        };
+        
+        // File reading functions
+        function readTextFile(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = (e) => resolve(e.target.result);
+                reader.onerror = () => reject(new Error('Failed to read text file'));
+                reader.readAsText(file);
+            });
+        }
+        
+        async function extractTextFromDocx(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        const arrayBuffer = e.target.result;
+                        const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
+                        if (result.value) {
+                            resolve(result.value);
+                        } else {
+                            reject(new Error('No text extracted from Word document'));
+                        }
+                    } catch (error) {
+                        reject(new Error('Failed to extract text from Word document: ' + error.message));
+                    }
+                };
+                reader.onerror = () => reject(new Error('Failed to read Word file'));
+                reader.readAsArrayBuffer(file);
+            });
+        }
+        
+        async function extractTextFromPdf(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    try {
+                        const typedArray = new Uint8Array(e.target.result);
+                        const pdf = await pdfjsLib.getDocument(typedArray).promise;
+                        let fullText = '';
+                        
+                        for (let i = 1; i <= pdf.numPages; i++) {
+                            const page = await pdf.getPage(i);
+                            const textContent = await page.getTextContent();
+                            const pageText = textContent.items.map(item => item.str).join(' ');
+                            fullText += pageText + '\n\n';
+                        }
+                        
+                        if (fullText.trim()) {
+                            resolve(fullText);
+                        } else {
+                            reject(new Error('No text extracted from PDF'));
+                        }
+                    } catch (error) {
+                        reject(new Error('Failed to extract text from PDF: ' + error.message));
+                    }
+                };
+                reader.onerror = () => reject(new Error('Failed to read PDF file'));
+                reader.readAsArrayBuffer(file);
+            });
+        }
+        
+        // Drag and drop
+        fileUploadArea.ondragover = function(e) {
+            e.preventDefault();
+            fileUploadArea.classList.add('dragover');
+        };
+        
+        fileUploadArea.ondragleave = function() {
+            fileUploadArea.classList.remove('dragover');
+        };
+        
+        fileUploadArea.ondrop = function(e) {
+            e.preventDefault();
+            fileUploadArea.classList.remove('dragover');
+            const file = e.dataTransfer.files[0];
+            fileInput.files = e.dataTransfer.files;
+            fileInput.onchange({ target: fileInput });
+        };
+        
+        // Handle Enter key in response input
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                sendResponse();
+            }
+        }
+        
+        // Start adaptation
+        async function startAdaptation() {
+            apiKey = document.getElementById('apiKey').value.trim();
+            const manualText = document.getElementById('lessonText').value.trim();
+            
+            if (!apiKey) {
+                alert('Please enter your Anthropic API key.');
+                return;
+            }
+            
+            if (!lessonContent && !manualText) {
+                alert('Please upload a file or paste lesson plan text.');
+                return;
+            }
+            
+            // Save API key
+            localStorage.setItem('anthropicApiKey', apiKey);
+            
+            // Use manual text if provided, otherwise use uploaded file
+            if (manualText && !uploadedFile) {
+                lessonContent = manualText;
+            }
+            
+            // Hide setup, show chat
+            document.getElementById('setupSection').classList.add('hidden');
+            document.getElementById('chatSection').classList.remove('hidden');
+            
+            // Initialize conversation
+            conversationHistory = [];
+            
+            // Send first message
+            const initialPrompt = `${masterInstructions}\n\n---\n\nHere is the lesson plan to adapt:\n\n${lessonContent}`;
+            
+            await sendMessageToClaude(initialPrompt);
+        }
+        
+        // Send user response
+        async function sendResponse() {
+            const input = document.getElementById('userResponse');
+            const message = input.value.trim();
+            
+            if (!message) return;
+            
+            // Add user message to chat
+            addMessageToChat('user', message);
+            conversationHistory.push({ role: 'user', content: message });
+            
+            // Clear input
+            input.value = '';
+            
+            // Send to Claude
+            await sendMessageToClaude(message);
+        }
+        
+        // Send message to Claude API
+        async function sendMessageToClaude(userMessage) {
+            // Show loading
+            const chatContainer = document.getElementById('chatContainer');
+            const loadingDiv = document.createElement('div');
+            loadingDiv.className = 'loading';
+            loadingDiv.innerHTML = '<div class="spinner"></div><p>Sam is thinking...</p>';
+            chatContainer.appendChild(loadingDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+            
+            try {
+                const response = await fetch('https://api.anthropic.com/v1/messages', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'x-api-key': apiKey,
+                        'anthropic-version': '2023-06-01'
+                    },
+                    body: JSON.stringify({
+                        model: 'claude-sonnet-4-20250514',
+                        max_tokens: 8000,
+                        messages: conversationHistory.length === 0 
+                            ? [{ role: 'user', content: userMessage }]
+                            : conversationHistory
+                    })
+                });
+                
+                // Remove loading
+                chatContainer.removeChild(loadingDiv);
+                
+                if (!response.ok) {
+                    const error = await response.json();
+                    throw new Error(error.error?.message || 'API request failed');
+                }
+                
+                const data = await response.json();
+                const assistantMessage = data.content[0].text;
+                
+                // Add to conversation history
+                conversationHistory.push({ role: 'assistant', content: assistantMessage });
+                
+                // Add to chat
+                addMessageToChat('assistant', assistantMessage);
+                
+                // Check if we have the final versions
+                checkForVersions(assistantMessage);
+                
+            } catch (error) {
+                chatContainer.removeChild(loadingDiv);
+                addMessageToChat('error', `Error: ${error.message}`);
+            }
+        }
+        
+        // Add message to chat display
+        function addMessageToChat(role, content) {
+            const chatContainer = document.getElementById('chatContainer');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+            
+            if (role === 'error') {
+                messageDiv.className = 'error';
+            }
+            
+            const label = document.createElement('div');
+            label.className = 'message-label';
+            label.textContent = role === 'user' ? 'You' : (role === 'error' ? 'Error' : 'Sam');
+            
+            const text = document.createElement('div');
+            text.style.whiteSpace = 'pre-wrap';
+            text.textContent = content;
+            
+            messageDiv.appendChild(label);
+            messageDiv.appendChild(text);
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+        
+        // Check for version markers
+        function checkForVersions(message) {
+            const autismMatch = message.match(/### AUTISM VERSION START\n([\s\S]*?)\n### AUTISM VERSION END/);
+            const pdaMatch = message.match(/### PDA VERSION START\n([\s\S]*?)\n### PDA VERSION END/);
+            
+            if (autismMatch && pdaMatch) {
+                autismVersion = autismMatch[1];
+                pdaVersion = pdaMatch[1];
+                document.getElementById('downloadSection').classList.remove('hidden');
+            }
+        }
+        
+        // Download files
+        function downloadFile(version) {
+            const content = version === 'autism' ? autismVersion : pdaVersion;
+            const filename = version === 'autism' ? 'Autism_Version.md' : 'PDA_Version.md';
+            
+            const blob = new Blob([content], { type: 'text/markdown' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            URL.revokeObjectURL(url);
+        }
+        
+        // Reset app
+        function resetApp() {
+            conversationHistory = [];
+            lessonContent = '';
+            uploadedFile = null;
+            autismVersion = '';
+            pdaVersion = '';
+            
+            document.getElementById('chatContainer').innerHTML = '';
+            document.getElementById('userResponse').value = '';
+            document.getElementById('lessonText').value = '';
+            document.getElementById('fileStatus').innerHTML = '';
+            document.getElementById('fileInput').value = '';
+            
+            document.getElementById('setupSection').classList.remove('hidden');
+            document.getElementById('chatSection').classList.add('hidden');
+            document.getElementById('downloadSection').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>

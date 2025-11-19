@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en-GB">
 <head>
@@ -386,16 +385,7 @@
         
         <div id="setupSection">
             <section class="section">
-                <h2>Step 1: Enter your API key</h2>
-                <label for="apiKey">Anthropic API Key:</label>
-                <input type="password" id="apiKey" placeholder="sk-ant-..." />
-                <p class="help-text">Your API key will be stored in your browser's local storage for convenience. Cost per adaptation: approximately £0.05–0.10.</p>
-            </section>
-            
-            <hr>
-            
-            <section class="section">
-                <h2>Step 2: Upload your lesson plan</h2>
+                <h2>Upload your lesson plan</h2>
                 <label>Upload File:</label>
                 <div class="file-upload" id="fileUploadArea">
                     <p style="font-size: 1.2rem; margin-bottom: 8px;">📄 Click to select a file or drag and drop</p>
@@ -452,7 +442,6 @@
         
         // State management
         let conversationHistory = [];
-        let apiKey = '';
         let lessonContent = '';
         let uploadedFile = null;
         let autismVersion = '';
@@ -663,12 +652,9 @@ Deliver in this exact order:
 
 **End of master instructions.**`;
 
-        // Load saved API key
+        // Initialize on page load
         window.onload = function() {
-            const savedKey = localStorage.getItem('anthropicApiKey');
-            if (savedKey) {
-                document.getElementById('apiKey').value = savedKey;
-            }
+            // No API key needed - handled server-side
         };
         
         // File upload handling
@@ -793,21 +779,12 @@ Deliver in this exact order:
         
         // Start adaptation
         async function startAdaptation() {
-            apiKey = document.getElementById('apiKey').value.trim();
             const manualText = document.getElementById('lessonText').value.trim();
-            
-            if (!apiKey) {
-                alert('Please enter your Anthropic API key.');
-                return;
-            }
             
             if (!lessonContent && !manualText) {
                 alert('Please upload a file or paste lesson plan text.');
                 return;
             }
-            
-            // Save API key
-            localStorage.setItem('anthropicApiKey', apiKey);
             
             // Use manual text if provided, otherwise use uploaded file
             if (manualText && !uploadedFile) {
@@ -862,7 +839,6 @@ Deliver in this exact order:
                         'Content-Type': 'application/json'
                     },
                     body: JSON.stringify({
-                        api_key: apiKey,
                         messages: conversationHistory.length === 0 
                             ? [{ role: 'user', content: userMessage }]
                             : conversationHistory

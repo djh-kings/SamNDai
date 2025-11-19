@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KCS - Sam ND Assistant</title>
+    <title>Sam - ND Assistant</title>
     <style>
         * {
             margin: 0;
@@ -379,16 +379,12 @@
 <body>
     <div class="container">
         <header>
-            <h1>KCS - Sam ND Assistant</h1>
-            <p class="brand">visuLearn • Built for UK Educators</p>
+            <h1>Sam - ND Assistant</h1>
+            <p class="brand">DJH - Work in progress 19/11/25</p>
             <p class="subtitle">Upload a lesson plan and generate autism-friendly and PDA-friendly versions</p>
         </header>
         
         <div id="setupSection">
-            <div class="warning">
-                <strong>⚠️ API Key Required:</strong> This tool requires an Anthropic API key. Get one at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a>. Your key is stored only in your browser and never sent anywhere except to Anthropic's API.
-            </div>
-            
             <section class="section">
                 <h2>Step 1: Enter your API key</h2>
                 <label for="apiKey">Anthropic API Key:</label>
@@ -925,13 +921,23 @@ Deliver in this exact order:
         
         // Check for version markers
         function checkForVersions(message) {
+            console.log('Checking for version markers...');
+            console.log('Message length:', message.length);
+            console.log('Message preview:', message.substring(0, 200));
+            
             const autismMatch = message.match(/### AUTISM VERSION START\n([\s\S]*?)\n### AUTISM VERSION END/);
             const pdaMatch = message.match(/### PDA VERSION START\n([\s\S]*?)\n### PDA VERSION END/);
+            
+            console.log('Autism match found:', !!autismMatch);
+            console.log('PDA match found:', !!pdaMatch);
             
             if (autismMatch && pdaMatch) {
                 autismVersion = autismMatch[1];
                 pdaVersion = pdaMatch[1];
+                console.log('Both versions found! Showing download section.');
                 document.getElementById('downloadSection').classList.remove('hidden');
+            } else {
+                console.log('Versions not found yet. Autism:', !!autismMatch, 'PDA:', !!pdaMatch);
             }
         }
         

@@ -392,9 +392,9 @@
                 <label>Upload File:</label>
                 <div class="file-upload" id="fileUploadArea">
                     <p style="font-size: 1.2rem; margin-bottom: 8px;">📄 Click to select a file or drag and drop</p>
-                    <p style="font-size: 14px; color: #888888;">Supported formats: .txt, .docx, .pdf</p>
+                    <p style="font-size: 14px; color: #888888;">Supported format: .txt (or paste text from Word/PDF below)</p>
                 </div>
-                <input type="file" id="fileInput" accept=".txt,.docx,.pdf" />
+                <input type="file" id="fileInput" accept=".txt" />
                 <div id="fileStatus"></div>
             </section>
             
@@ -435,13 +435,7 @@
         </div>
     </div>
 
-    <!-- External libraries for file processing -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.6.0/mammoth.browser.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
-
     <script>
-        // Configure PDF.js worker
-        pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
         
         // State management
         let conversationHistory = [];
@@ -672,86 +666,27 @@ Deliver in this exact order:
             
             uploadedFile = file;
             const statusDiv = document.getElementById('fileStatus');
-            statusDiv.innerHTML = `<div class="info">Processing ${file.name}...</div>`;
+            statusDiv.innerHTML = `<div class="info">Reading ${file.name}...</div>`;
             
             try {
-                if (file.name.endsWith('.txt')) {
-                    lessonContent = await readTextFile(file);
-                    statusDiv.innerHTML = `<div class="success">✅ Extracted text from ${file.name} (${lessonContent.length} characters)</div>`;
-                } else if (file.name.endsWith('.docx')) {
-                    lessonContent = await extractTextFromDocx(file);
-                    statusDiv.innerHTML = `<div class="success">✅ Extracted text from ${file.name} (${lessonContent.length} characters)</div>`;
-                } else if (file.name.endsWith('.pdf')) {
-                    lessonContent = await extractTextFromPdf(file);
-                    statusDiv.innerHTML = `<div class="success">✅ Extracted text from ${file.name} (${lessonContent.length} characters)</div>`;
-                }
+                lessonContent = await readTextFile(file);
+                statusDiv.innerHTML = `<div class="success">✅ Loaded ${file.name} (${lessonContent.length} characters)</div>`;
                 
                 // Show preview in textarea
                 document.getElementById('lessonText').value = lessonContent.substring(0, 1000) + (lessonContent.length > 1000 ? '...' : '');
             } catch (error) {
-                statusDiv.innerHTML = `<div class="error">❌ Error processing file: ${error.message}</div>`;
-                console.error('File processing error:', error);
+                statusDiv.innerHTML = `<div class="error">❌ Error reading file: ${error.message}</div>`;
+                console.error('File reading error:', error);
             }
         };
         
-        // File reading functions
+        // File reading function
         function readTextFile(file) {
             return new Promise((resolve, reject) => {
                 const reader = new FileReader();
                 reader.onload = (e) => resolve(e.target.result);
                 reader.onerror = () => reject(new Error('Failed to read text file'));
                 reader.readAsText(file);
-            });
-        }
-        
-        async function extractTextFromDocx(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    try {
-                        const arrayBuffer = e.target.result;
-                        const result = await mammoth.extractRawText({ arrayBuffer: arrayBuffer });
-                        if (result.value) {
-                            resolve(result.value);
-                        } else {
-                            reject(new Error('No text extracted from Word document'));
-                        }
-                    } catch (error) {
-                        reject(new Error('Failed to extract text from Word document: ' + error.message));
-                    }
-                };
-                reader.onerror = () => reject(new Error('Failed to read Word file'));
-                reader.readAsArrayBuffer(file);
-            });
-        }
-        
-        async function extractTextFromPdf(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = async function(e) {
-                    try {
-                        const typedArray = new Uint8Array(e.target.result);
-                        const pdf = await pdfjsLib.getDocument(typedArray).promise;
-                        let fullText = '';
-                        
-                        for (let i = 1; i <= pdf.numPages; i++) {
-                            const page = await pdf.getPage(i);
-                            const textContent = await page.getTextContent();
-                            const pageText = textContent.items.map(item => item.str).join(' ');
-                            fullText += pageText + '\n\n';
-                        }
-                        
-                        if (fullText.trim()) {
-                            resolve(fullText);
-                        } else {
-                            reject(new Error('No text extracted from PDF'));
-                        }
-                    } catch (error) {
-                        reject(new Error('Failed to extract text from PDF: ' + error.message));
-                    }
-                };
-                reader.onerror = () => reject(new Error('Failed to read PDF file'));
-                reader.readAsArrayBuffer(file);
             });
         }
         
